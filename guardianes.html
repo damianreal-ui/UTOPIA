@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual y Infografía Guardianes del Agua</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #004d40;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .tab-button {
+            background-color: #e0f2f1;
+            border: 1px solid #4db6ac;
+            color: #004d40;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+        .tab-button.active {
+            background-color: #00796b;
+            color: white;
+            border-color: #00796b;
+        }
+        .tab-content {
+            border: 1px solid #4db6ac;
+            border-radius: 0 8px 8px 8px;
+            padding: 2rem;
+            background-color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .accordion-button {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #e0f2f1;
+            border: 1px solid #4db6ac;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background-color: #ffffff;
+            padding: 0 1rem;
+            border-left: 1px solid #4db6ac;
+            border-right: 1px solid #4db6ac;
+            border-bottom: 1px solid #4db6ac;
+            border-radius: 0 0 8px 8px;
+        }
+        .accordion-content.open {
+            max-height: 2000px;
+            padding: 1rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover, .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .video-link {
+            display: block;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: #e0f2f1;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: #004d40;
+            font-weight: 600;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .video-link:hover {
+            background-color: #a7f3d0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center py-12">
+    <div class="container mx-auto px-4">
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-teal-800 mb-2">Guardianes del Agua</h1>
+            <p class="text-xl text-teal-600">Manual y Infografía interactiva</p>
+        </header>
+
+        <div class="flex justify-center mb-8">
+            <button id="manualTab" class="tab-button active" onclick="showTab('manual')">Manual del Profesor</button>
+            <button id="infografiaTab" class="tab-button" onclick="showTab('infografia')">Infografía Interactiva</button>
+        </div>
+
+        <div id="manualContent" class="tab-content">
+            <section class="mb-12">
+                <div class="card p-6">
+                    <h2 class="text-2xl font-bold mb-4 border-b-2 border-teal-500 pb-2">Objetivo General del Taller</h2>
+                    <p class="text-lg">Desarrollar una comprensión científica, crítica y sensible sobre la importancia del agua, sus problemáticas y las soluciones sostenibles, para fomentar una cultura de cuidado, participación y responsabilidad hídrica.</p>
+                </div>
+            </section>
+
+            <section id="manual-sessions">
+                <div class="space-y-6">
+
+                    <div class="card">
+                        <div class="accordion-button" onclick="toggleAccordion('session1')">
+                            <span>Sesión 1: El Viaje de una Gota</span>
+                            <span>+</span>
+                        </div>
+                        <div class="accordion-content" id="session1">
+                            <div class="p-4">
+                                <h3 class="text-xl font-bold mb-2">Propósito</h3>
+                                <p>Que los participantes comprendan de manera vivencial y científica los estados del agua y las fases del ciclo hidrológico.</p>
+                                <h3 class="text-xl font-bold mt-4 mb-2">Actividades</h3>
+                                <div class="space-y-4 mt-2">
+                                    <div>
+                                        <p class="font-semibold">**Inicio (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Círculo de diálogo:** Inicia la sesión formando un círculo para fomentar la participación. Haz las preguntas: "¿Qué es el agua para ti? ¿Cuál es tu recuerdo más bonito con el agua?".</li>
+                                            <li>**Presentación del taller:** Introduce el título "Guardianes del Agua" y el objetivo general. Explica de manera sencilla que el taller explorará la importancia del agua, sus problemas y soluciones.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Desarrollo (70 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Actividad "Cómo se forma la lluvia":**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Materiales:** Bolsas herméticas, marcadores, agua, colorante, cinta adhesiva.</li>
+                                                    <li>**Instrucciones:** Pide a los participantes que dibujen en la bolsa el sol, una nube y la superficie de la tierra con agua. Agrega colorante al agua y viértela en la bolsa. Sella bien. Pega la bolsa en un lugar donde reciba luz solar directa. Mientras esperan, explica los conceptos de **evaporación** y **condensación**.</li>
+                                                </ul>
+                                            </li>
+                                            <li>**Representación corporal del ciclo del agua:**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Instrucciones:** Divide a los participantes en equipos y asígnales una fase del ciclo hidrológico. Pídeles que usen sus cuerpos para representar cada acción.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Cierre (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Reflexión grupal:** Con la frase "El agua que bebemos hoy es la misma que ha permanecido en la Tierra por millones de años", fomenta un diálogo sobre lo que les hace sentir ese hecho.</li>
+                                            <li>**Tarea:** Pide a los participantes que observen dónde ven el agua en su día a día y que lo compartan en la siguiente sesión.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="text-xl font-bold mb-2">Videos sugeridos</h3>
+                                    <a href="https://www.youtube.com/watch?v=I-6HMp3SJU0" target="_blank" class="video-link">Video: El agua en el planeta Tierra - Ciclo del agua</a>
+                                    <a href="https://www.youtube.com/watch?v=li_ZAHyl2EQ" target="_blank" class="video-link">Video: ¿Qué es la HIDRÓSFERA? + El ciclo del agua</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="accordion-button" onclick="toggleAccordion('session2')">
+                            <span>Sesión 2: Nuestro Planeta Azul</span>
+                            <span>+</span>
+                        </div>
+                        <div class="accordion-content" id="session2">
+                            <div class="p-4">
+                                <h3 class="text-xl font-bold mb-2">Propósito</h3>
+                                <p>Que los participantes identifiquen la distribución del agua en la Tierra, diferenciando entre agua dulce y salada, y reconozcan la escasez del recurso disponible para el consumo humano.</p>
+                                <h3 class="text-xl font-bold mt-4 mb-2">Actividades</h3>
+                                <div class="space-y-4 mt-2">
+                                    <div>
+                                        <p class="font-semibold">**Inicio (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Puesta en común:** Inicia la sesión pidiendo a los participantes que compartan lo que observaron sobre la presencia del agua en su día a día.</li>
+                                            <li>**Mapa mental:** Con las ideas de todos, crea un mapa mental colectivo en una pizarra.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Desarrollo (70 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Visualización de la distribución del agua:**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Materiales:** Recipientes medidores (jarras, vasos), sal, hielo, tierra, mapa del mundo.</li>
+                                                    <li>**Instrucciones:** Usa los recipientes para mostrar que el 97.5% del agua es salada y solo el 2.5% es dulce. Luego, muestra cómo ese 2.5% se distribuye: 69% como hielo, 30% como agua subterránea y solo 1% en ríos y lagos.</li>
+                                                </ul>
+                                            </li>
+                                            <li>**Diálogo crítico:** Fomenta un diálogo sobre la escasez, preguntando: "Sabiendo que solo el 0.007% del agua del planeta está disponible, ¿cómo cambia nuestra percepción?".</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Cierre (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Reflexión final:** Recalca que el agua disponible es muy limitada y motiva a la acción.</li>
+                                            <li>**Tarea:** Pide a los participantes que piensen en un objeto o alimento que usen o consuman a diario, y que investiguen cuánta agua se necesita para su producción (huella hídrica).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="text-xl font-bold mb-2">Videos sugeridos</h3>
+                                    <a href="https://www.youtube.com/watch?v=C7FCrI1BR8E" target="_blank" class="video-link">Video: Distribución del agua en la Tierra</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="accordion-button" onclick="toggleAccordion('session3')">
+                            <span>Sesión 3: Agua es Vida: Salud y Contaminación</span>
+                            <span>+</span>
+                        </div>
+                        <div class="accordion-content" id="session3">
+                            <div class="p-4">
+                                <h3 class="text-xl font-bold mb-2">Propósito</h3>
+                                <p>Que los participantes comprendan la importancia del agua para la salud y reconozcan las principales fuentes y consecuencias de la contaminación del agua.</p>
+                                <h3 class="text-xl font-bold mt-4 mb-2">Actividades</h3>
+                                <div class="space-y-4 mt-2">
+                                    <div>
+                                        <p class="font-semibold">**Inicio (10 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Conexión con el cuerpo:** Pide a los participantes que sientan el agua en su propio cuerpo. Explica que somos entre un 65% a 75% agua.</li>
+                                            <li>**Concientización:** Pídeles que tomen un vaso de agua de manera consciente.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Desarrollo (75 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Rol en la salud:** Explica el rol del agua en la salud humana, destacando que el consumo de agua contaminada puede causar enfermedades.</li>
+                                            <li>**Experimento "Contaminación del Agua":**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Materiales:** Vasos con agua, ramas de apio, colorante vegetal, imágenes de diferentes tipos de contaminación.</li>
+                                                    <li>**Instrucciones:** Vierte colorante en un vaso de agua, introduce la rama de apio y deja que repose. Usa el experimento para visualizar cómo los contaminantes (el colorante) son absorbidos por los seres vivos (el apio).</li>
+                                                </ul>
+                                            </li>
+                                            <li>**Discusión:** Discutan las fuentes de contaminación del agua desde el hogar, como aceites de cocina usados y productos de limpieza.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Cierre (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Plenaria:** Abre un espacio para que los participantes propongan acciones para evitar la contaminación del agua desde casa.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="text-xl font-bold mb-2">Videos sugeridos</h3>
+                                    <a href="https://www.youtube.com/watch?v=nLwKY58CdNc" target="_blank" class="video-link">Video: Contaminación del Agua</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="accordion-button" onclick="toggleAccordion('session4')">
+                            <span>Sesión 4: Huella Hídrica y Retos Locales</span>
+                            <span>+</span>
+                        </div>
+                        <div class="accordion-content" id="session4">
+                            <div class="p-4">
+                                <h3 class="text-xl font-bold mb-2">Propósito</h3>
+                                <p>Que los participantes comprendan el concepto de huella hídrica y analicen problemáticas del agua en su comunidad y en la Ciudad de México.</p>
+                                <h3 class="text-xl font-bold mt-4 mb-2">Actividades</h3>
+                                <div class="space-y-4 mt-2">
+                                    <div>
+                                        <p class="font-semibold">**Inicio (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Pregunta generadora:** Muestra una camiseta, una manzana y un celular. Pregunta: "¿Cuánta agua creen que se necesitó para hacer esto?".</li>
+                                            <li>**Conexión emocional:** Pregúntales si alguna vez ha faltado el agua en su casa o escuela y cómo se sintieron.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Desarrollo (70 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Concepto de Huella Hídrica:** Introduce la huella hídrica, explicando que es el agua dulce total utilizada para la producción de bienes y servicios que consumimos.</li>
+                                            <li>**Investigación en equipos:**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Materiales:** Fichas con información de la huella hídrica de productos, acceso a internet (opcional).</li>
+                                                    <li>**Instrucciones:** En equipos, investiguen y calculen la huella hídrica de varios productos (ejemplo: jeans: 10,850 L, 1 kg de carne: 15,415 L).</li>
+                                                </ul>
+                                            </li>
+                                            <li>**Diálogo sobre retos locales:** Discutan los problemas del agua en la CDMX: sobreexplotación de acuíferos, desigualdad en la distribución y pérdida de agua por fugas (35-40%).</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Cierre (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Diseño de la campaña:** Los equipos comienzan a diseñar su campaña de concientización (cartel, video corto, canción) sobre un problema local.</li>
+                                            <li>**Tarea:** Pídeles que investiguen sobre una solución sostenible para el agua implementada en su comunidad o en otra ciudad.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="text-xl font-bold mb-2">Videos sugeridos</h3>
+                                    <a href="https://www.youtube.com/watch?v=83kA1TuucWc" target="_blank" class="video-link">Video: "La Huella Hídrica - Aguas Adentro"</a>
+                                    <a href="https://www.youtube.com/watch?v=l_nUuOvF1zU" target="_blank" class="video-link">Video: "¿Cuánta agua se requiere para producir los alimentos?"</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="accordion-button" onclick="toggleAccordion('session5')">
+                            <span>Sesión 5: ¡Manos al Agua!: Soluciones Sostenibles</span>
+                            <span>+</span>
+                        </div>
+                        <div class="accordion-content" id="session5">
+                            <div class="p-4">
+                                <h3 class="text-xl font-bold mb-2">Propósito</h3>
+                                <p>Que los participantes construyan un filtro de agua casero y conozcan los Sistemas de Captación de Agua de Lluvia (SCALL) como una alternativa viable y esperanzadora.</p>
+                                <h3 class="text-xl font-bold mt-4 mb-2">Actividades</h3>
+                                <div class="space-y-4 mt-2">
+                                    <div>
+                                        <p class="font-semibold">**Inicio (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Decálogo y soluciones:** Presenta el "Decálogo para una nueva cultura del agua" y pide a los equipos que compartan las soluciones sostenibles que investigaron.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Desarrollo (70 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Construcción del filtro de agua casero:**
+                                                <ul class="list-circle list-inside ml-4 mt-2">
+                                                    <li>**Materiales:** Botellas de plástico, algodón, piedras, grava, carbón activado, arena.</li>
+                                                    <li>**Instrucciones:** En equipos, sigan las instrucciones para construir el filtro. Explica la función de cada capa (la grava y la arena filtran partículas grandes, el carbón activado remueve contaminantes químicos y olores).</li>
+                                                </ul>
+                                            </li>
+                                            <li>**Explicación de los SCALL:** Explica el funcionamiento y las ventajas de los Sistemas de Captación de Agua de Lluvia (SCALL) como una solución a gran escala para zonas con escasez de agua.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">**Cierre (15 min):**</p>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>**Presentación de campañas:** Los equipos presentan sus campañas de concientización a la comunidad.</li>
+                                            <li>**Celebración:** Reconoce el esfuerzo y el compromiso de los participantes como "Guardianes del Agua".</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h3 class="text-xl font-bold mb-2">Videos sugeridos</h3>
+                                    <a href="https://www.youtube.com/watch?v=nLwKY58CdNc" target="_blank" class="video-link">Video: Ciencia Especial - Filtro de agua</a>
+                                    <a href="https://www.youtube.com/watch?v=vpGZpvXM9z8" target="_blank" class="video-link">Video: #CaptaLaLluvia</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="infografiaContent" class="tab-content hidden">
+            <header class="text-center p-8 md:p-12 bg-teal-800 text-white">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-2">Infografía: Guardianes del Agua</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto">Una mirada profunda a nuestro recurso más valioso: desde su escasez global hasta las soluciones en nuestra comunidad.</p>
+            </header>
+
+            <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-16">
+
+                <section id="global-perspective">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-teal-800">El Dilema de Nuestro Planeta Azul</h2>
+                    <p class="text-center max-w-3xl mx-auto mb-10 text-lg">Aunque llamamos a la Tierra el "planeta azul", el agua dulce disponible para la vida es increíblemente escasa. La gran mayoría es salada o está congelada, lo que nos deja con una fracción diminuta para sostener a toda la humanidad y los ecosistemas terrestres.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Distribución Total del Agua</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-global-dist')">ℹ️</span>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="waterDistributionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Desglose del Agua Dulce</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-freshwater-dist')">ℹ️</span>
+                            </div>
+                             <div class="chart-container">
+                                <canvas id="freshwaterDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                     <p class="text-center font-bold text-2xl mt-8 text-red-600">Solo el 0.007% de toda el agua del planeta está disponible para nuestro consumo.</p>
+                </section>
+
+                <section id="mexico-context">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-teal-800">La Realidad del Agua en México y la CDMX</h2>
+                    <p class="text-center max-w-3xl mx-auto mb-10 text-lg">México enfrenta un reto de disponibilidad y gestión del agua. Mientras que a nivel nacional el consumo agrícola es masivo, en la Ciudad de México la escasez se agrava por fugas, la sobreexplotación de acuíferos y una distribución desigual.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg md:col-span-2">
+                             <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Disponibilidad de Agua per cápita en México</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-historica')">ℹ️</span>
+                            </div>
+                            <div class="chart-container h-80 max-w-4xl">
+                                <canvas id="historicalWaterChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                             <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Consumo de Agua por Sector en México</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-consumo-sector')">ℹ️</span>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="sectorConsumptionChart"></canvas>
+                            </div>
+                        </div>
+                         <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center">
+                            <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Pérdida por Fugas en la CDMX</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-fugas')">ℹ️</span>
+                            </div>
+                            <p class="text-7xl font-extrabold text-red-600">40%</p>
+                            <p class="text-center mt-4">Casi la mitad del agua que llega a la ciudad se pierde en fugas antes de llegar a los hogares, un desperdicio masivo debido a la infraestructura antigua.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="water-footprint">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-teal-800">Nuestra Huella Hídrica Oculta</h2>
+                    <p class="text-center max-w-3xl mx-auto mb-10 text-lg">El agua que usamos no solo sale del grifo. Cada producto que consumimos, desde la ropa que vestimos hasta los alimentos que comemos, requiere enormes cantidades de agua para su producción. Esta es la huella hídrica, y reducirla es clave.</p>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="flex items-center justify-center mb-4">
+                            <h3 class="text-xl font-bold text-center">Litros de Agua para Producir...</h3>
+                            <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-footprint')">ℹ️</span>
+                        </div>
+                        <div class="chart-container h-96 max-w-5xl">
+                            <canvas id="footprintChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="solutions">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-teal-800">¡Manos al Agua! Soluciones a Nuestro Alcance</h2>
+                    <p class="text-center max-w-3xl mx-auto mb-10 text-lg">Frente a estos desafíos, existen soluciones prácticas y sostenibles que podemos implementar. Convertirnos en "Guardianes del Agua" significa tomar acción, empezando por nuestro propio hogar y comunidad.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Escala de pH y Lluvia Ácida</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-ph')">ℹ️</span>
+                            </div>
+                            <div class="w-full max-w-sm mx-auto text-center font-semibold text-sm">
+                                <div class="p-2 border-2 border-red-600 rounded-t-lg bg-red-100">Ácido de baterías (pH 0)</div>
+                                <div class="p-2 border-2 border-red-600 -mt-px bg-red-100">Lluvia ácida (pH 4)</div>
+                                <div class="p-2 border-2 border-red-400 -mt-px bg-red-200">Lluvia limpia (pH 5.6)</div>
+                                <div class="p-2 border-2 border-teal-600 -mt-px bg-teal-100">Agua pura (pH 7)</div>
+                                <div class="p-2 border-2 border-blue-600 -mt-px bg-blue-100">Agua de mar (pH 8)</div>
+                                <div class="p-2 border-2 border-blue-800 -mt-px rounded-b-lg bg-blue-200">Limpiador líquido (pH 14)</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <h3 class="text-xl font-bold text-center">Capas de un Filtro de Agua Casero</h3>
+                                <span class="text-sm font-normal text-teal-700 cursor-pointer ml-2" onclick="showInfographicCitation('info-filtro')">ℹ️</span>
+                            </div>
+                            <div class="w-full max-w-xs mx-auto text-center font-semibold">
+                                <div class="p-3 border-2 rounded-t-lg bg-teal-100 border-teal-500">Piedras Pequeñas</div>
+                                <div class="p-3 border-2 -mt-px bg-white border-teal-500">Grava</div>
+                                <div class="p-3 border-2 -mt-px bg-teal-100 border-teal-500">Arena Fina</div>
+                                <div class="p-3 border-2 -mt-px bg-gray-700 text-white border-teal-500">Carbón Activado</div>
+                                <div class="p-3 border-2 -mt-px bg-teal-100 border-teal-500">Grava</div>
+                                <div class="p-3 border-2 -mt-px bg-white border-teal-500">Piedras Medianas</div>
+                                <div class="p-3 border-2 -mt-px rounded-b-lg bg-teal-100 border-teal-500">Algodón</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="citationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="citationText" class="mt-4"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = {
+                manual: {
+                    button: document.getElementById('manualTab'),
+                    content: document.getElementById('manualContent')
+                },
+                infografia: {
+                    button: document.getElementById('infografiaTab'),
+                    content: document.getElementById('infografiaContent')
+                }
+            };
+            
+            window.showTab = function(tabName) {
+                for (let tab in tabs) {
+                    if (tab === tabName) {
+                        tabs[tab].button.classList.add('active');
+                        tabs[tab].content.classList.remove('hidden');
+                        if (tabName === 'infografia' && !window.infografiaChartsInitialized) {
+                            initializeInfografiaCharts();
+                            window.infografiaChartsInitialized = true;
+                        }
+                    } else {
+                        tabs[tab].button.classList.remove('active');
+                        tabs[tab].content.classList.add('hidden');
+                    }
+                }
+            };
+
+            window.toggleAccordion = function(id) {
+                const content = document.getElementById(id);
+                const button = content.previousElementSibling;
+                if (content.classList.contains('open')) {
+                    content.classList.remove('open');
+                    button.querySelector('span:last-child').textContent = '+';
+                } else {
+                    document.querySelectorAll('.accordion-content.open').forEach(item => {
+                        item.classList.remove('open');
+                        item.previousElementSibling.querySelector('span:last-child').textContent = '+';
+                    });
+                    content.classList.add('open');
+                    button.querySelector('span:last-child').textContent = '-';
+                }
+            };
+
+            const citations = {
+                'info-global-dist': 'Página 27 del documento "Aprendiendo sobre el agua".',
+                'info-freshwater-dist': 'Página 27 del documento "Aprendiendo sobre el agua".',
+                'info-historica': 'Página 85 del documento "Aprendiendo sobre el agua".',
+                'info-consumo-sector': 'Página 89 del documento "Aprendiendo sobre el agua".',
+                'info-fugas': 'Página 105 del documento "Aprendiendo sobre el agua".',
+                'info-footprint': 'Página 67 del documento "Aprendiendo sobre el agua".',
+                'info-ph': 'Página 115 del documento "Aprendiendo sobre el agua".',
+                'info-filtro': 'Páginas 153-156 del documento "Aprendiendo sobre el agua".'
+            };
+
+            window.showInfographicCitation = function(key) {
+                document.getElementById('citationText').textContent = citations[key];
+                document.getElementById('citationModal').style.display = 'block';
+            };
+
+            document.querySelector('.close-button').addEventListener('click', () => {
+                document.getElementById('citationModal').style.display = 'none';
+            });
+
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('citationModal')) {
+                    document.getElementById('citationModal').style.display = 'none';
+                }
+            };
+
+            function wrapLabel(str, maxWidth) {
+                if (str.length <= maxWidth) {
+                    return str;
+                }
+                const words = str.split(' ');
+                let currentLine = '';
+                const lines = [];
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine += ' ' + word;
+                    }
+                }
+                lines.push(currentLine.trim());
+                return lines.filter(line => line.length > 0);
+            }
+
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 12, family: 'Inter' }, color: '#004d40', padding: 20 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        },
+                        bodyFont: { family: 'Inter' },
+                        titleFont: { family: 'Inter' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            };
+
+            window.initializeInfografiaCharts = function() {
+                const palette = {
+                    red: '#EF476F',
+                    yellow: '#FFD166',
+                    green: '#06D6A0',
+                    lightBlue: '#118AB2',
+                    darkBlue: '#073B4C'
+                };
+
+                new Chart(document.getElementById('waterDistributionChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Agua Salada', 'Agua Dulce'],
+                        datasets: [{
+                            label: 'Distribución Total del Agua',
+                            data: [97.5, 2.5],
+                            backgroundColor: [palette.lightBlue, palette.green],
+                            borderColor: ['#ffffff'],
+                            borderWidth: 4
+                        }]
+                    },
+                    options: { ...commonChartOptions }
+                });
+
+                new Chart(document.getElementById('freshwaterDistributionChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Glaciares y Hielo', 'Agua Subterránea', 'Ríos y Lagos'],
+                        datasets: [{
+                            label: 'Distribución del Agua Dulce',
+                            data: [69, 30, 1],
+                            backgroundColor: [palette.lightBlue, palette.yellow, palette.green],
+                            borderColor: ['#ffffff'],
+                            borderWidth: 4
+                        }]
+                    },
+                    options: { ...commonChartOptions }
+                });
+                
+                new Chart(document.getElementById('historicalWaterChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['1910', '1950', '1970', '2005', '2021', '2030 (Est.)'],
+                        datasets: [{
+                            label: 'm³ por habitante al año',
+                            data: [31000, 18000, 10000, 4573, 3586, 3430],
+                            backgroundColor: [
+                                palette.green, palette.green, palette.yellow,
+                                palette.yellow, palette.red, palette.red
+                            ],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        plugins: {
+                            ...commonChartOptions.plugins,
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'm³ / habitante / año' }
+                            }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('sectorConsumptionChart'), {
+                    type: 'pie',
+                    data: {
+                        labels: ['Agrícola (76%)', 'Público-Urbano (14.4%)', 'Industrial (9%)'],
+                        datasets: [{
+                            data: [76, 14.4, 9],
+                            backgroundColor: [palette.green, palette.lightBlue, palette.yellow],
+                            borderColor: ['#ffffff'],
+                            borderWidth: 4
+                        }]
+                    },
+                    options: { ...commonChartOptions }
+                });
+
+                const footprintLabels = ['1kg Carne de Res', 'Un par de Jeans', 'Una camiseta', '1kg Maíz', '1 Vaso de Leche', 'Una Manzana'];
+                const wrappedFootprintLabels = footprintLabels.map(label => wrapLabel(label, 16));
+
+                new Chart(document.getElementById('footprintChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: wrappedFootprintLabels,
+                        datasets: [{
+                            label: 'Litros de agua',
+                            data: [15415, 10850, 2000, 1860, 200, 70],
+                            backgroundColor: [palette.red, palette.lightBlue, palette.yellow, palette.green, '#FF9F40', '#9966FF'],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        plugins: {
+                            ...commonChartOptions.plugins,
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Litros' }
+                            }
+                        }
+                    }
+                });
+            };
+        });
+    </script>
+</body>
+</html>
